@@ -1,36 +1,27 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LofiStack Gallery
 
-## Getting Started
+Component gallery for the LofiStack 90 Day Build Challenge, built by Md. Hasan Taraque.
 
-First, run the development server:
+Stack: Next.js (App Router) · React · TypeScript · Tailwind CSS · deployed on Vercel.
+
+## Components
+
+| Week | Type   | Component             | Page                         | Source                                                                 |
+| ---- | ------ | --------------------- | ---------------------------- | ---------------------------------------------------------------------- |
+| 1    | button | Glass Button          | `/components/glass-button`   | [glass-button.tsx](src/components/ui/glass-button.tsx)                 |
+| 1    | card   | Animated Pricing Card | `/components/pricing-card`   | [pricing-card.tsx](src/components/ui/pricing-card.tsx)                 |
+
+## Adding a component
+
+1. Put the component in `src/components/ui/<slug>.tsx` with typed props.
+2. Put its interactive preview in `src/components/demos/<slug>-demo.tsx`.
+3. Add an entry to `src/lib/registry.tsx` (slug, type, week, usage snippet, props).
+
+The page at `/components/<slug>` is generated from the registry. `npm run dev` and `npm run build` bundle the source files shown on each page (`scripts/generate-sources.mjs`).
+
+## Run locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
