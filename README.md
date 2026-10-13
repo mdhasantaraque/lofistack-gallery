@@ -10,6 +10,9 @@ Stack: Next.js (App Router) · React · TypeScript · Tailwind CSS · deployed o
 | ---- | ------ | --------------------- | ---------------------------- | ---------------------------------------------------------------------- |
 | 1    | button | Glass Button          | `/components/glass-button`   | [glass-button.tsx](src/components/ui/glass-button.tsx)                 |
 | 1    | card   | Animated Pricing Card | `/components/pricing-card`   | [pricing-card.tsx](src/components/ui/pricing-card.tsx)                 |
+| 2    | input  | Histogram Range Slider | `/components/range-slider`  | [range-slider.tsx](src/components/ui/range-slider.tsx)                 |
+| 2    | modal  | Destructive Confirm Dialog | `/components/confirm-dialog` | [confirm-dialog.tsx](src/components/ui/confirm-dialog.tsx)         |
+| 2    | chart  | Activity Heatmap      | `/components/activity-heatmap` | [activity-heatmap.tsx](src/components/ui/activity-heatmap.tsx)       |
 
 ## Adding a component
 
