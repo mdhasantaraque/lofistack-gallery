@@ -13,6 +13,9 @@ Stack: Next.js (App Router) · React · TypeScript · Tailwind CSS · deployed o
 | 2    | input  | Histogram Range Slider | `/components/range-slider`  | [range-slider.tsx](src/components/ui/range-slider.tsx)                 |
 | 2    | modal  | Destructive Confirm Dialog | `/components/confirm-dialog` | [confirm-dialog.tsx](src/components/ui/confirm-dialog.tsx)         |
 | 2    | chart  | Activity Heatmap      | `/components/activity-heatmap` | [activity-heatmap.tsx](src/components/ui/activity-heatmap.tsx)       |
+| 3    | form   | Multi-Step Form Wizard | `/components/form-wizard`   | [form-wizard.tsx](src/components/ui/form-wizard.tsx)                   |
+| 3    | table  | Smart Data Table      | `/components/data-table`     | [data-table.tsx](src/components/ui/data-table.tsx)                     |
+| 3    | loader | Stepped Progress Loader | `/components/progress-loader` | [progress-loader.tsx](src/components/ui/progress-loader.tsx)       |
 
 ## Adding a component
 

@@ -4,6 +4,9 @@ import PricingCardDemo from "@/components/demos/pricing-card-demo";
 import RangeSliderDemo from "@/components/demos/range-slider-demo";
 import ConfirmDialogDemo from "@/components/demos/confirm-dialog-demo";
 import ActivityHeatmapDemo from "@/components/demos/activity-heatmap-demo";
+import FormWizardDemo from "@/components/demos/form-wizard-demo";
+import DataTableDemo from "@/components/demos/data-table-demo";
+import ProgressLoaderDemo from "@/components/demos/progress-loader-demo";
 
 /** Plain labels from the challenge brief. Used to keep components distinct. */
 export type UiType =
@@ -343,6 +346,187 @@ export function Contributions({ days }: { days: { date: string; count: number }[
       { name: "showStats", type: "boolean", default: "true", description: "Total, active days and streaks." },
     ],
     Demo: ActivityHeatmapDemo,
+  },
+  {
+    slug: "form-wizard",
+    name: "Multi-Step Form Wizard",
+    type: "form",
+    week: 3,
+    description:
+      "A multi-step form driven by a steps config: per-step validation, an error summary that links to each field, a password strength meter, a review step with Edit links, and async submit.",
+    sourceFile: "src/components/ui/form-wizard.tsx",
+    usage: `import { FormWizard, type WizardStep } from "@/components/ui/form-wizard";
+
+const steps: WizardStep[] = [
+  {
+    id: "account",
+    title: "Account",
+    fields: [
+      { name: "email", label: "Work email", type: "email", required: true },
+      { name: "password", label: "Password", type: "password", required: true, minLength: 8 },
+    ],
+  },
+  {
+    id: "workspace",
+    title: "Workspace",
+    fields: [
+      {
+        name: "slug",
+        label: "Workspace URL",
+        required: true,
+        validate: (v) => (/^[a-z0-9-]+$/.test(v) ? null : "Use lowercase letters, numbers and hyphens"),
+      },
+    ],
+  },
+];
+
+export function Signup() {
+  return <FormWizard steps={steps} onSubmit={(values) => api.signup(values)} submitLabel="Create workspace" />;
+}`,
+    props: [
+      {
+        name: "steps",
+        type: "WizardStep[]",
+        description: "Each step has an id, title, optional description and a list of fields.",
+      },
+      {
+        name: "WizardField",
+        type: "{ name, label, type?, required?, minLength?, options?, hint?, validate? }",
+        description: "type is text, email, tel, password, textarea or select. validate gets the value and all values.",
+      },
+      {
+        name: "onSubmit",
+        type: "(values) => void | Promise<void>",
+        description: "A rejected promise shows its message and keeps every answer.",
+      },
+      { name: "initialValues", type: "Record<string, string>", default: "{}", description: "Prefilled answers." },
+      { name: "showReview", type: "boolean", default: "true", description: "Adds a Check your answers step." },
+      { name: "submitLabel", type: "string", default: '"Submit"', description: "Text on the final button." },
+      {
+        name: "successTitle / successMessage",
+        type: "string",
+        description: "Shown after a successful submit.",
+      },
+      { name: "accent", type: "string", default: '"#818cf8"', description: "Any CSS color for stepper and buttons." },
+    ],
+    Demo: FormWizardDemo,
+  },
+  {
+    slug: "data-table",
+    name: "Smart Data Table",
+    type: "table",
+    week: 3,
+    description:
+      "A typed data table with search, multi-column sort, Shift-click range selection, a bulk action bar, column visibility, compact mode and pagination.",
+    sourceFile: "src/components/ui/data-table.tsx",
+    usage: `"use client";
+
+import { DataTable, type DataTableColumn } from "@/components/ui/data-table";
+
+const columns: DataTableColumn<Order>[] = [
+  { key: "id", header: "Order", value: (o) => o.id, hideable: false },
+  { key: "customer", header: "Customer", value: (o) => o.customer },
+  { key: "date", header: "Date", value: (o) => new Date(o.date), searchable: false },
+  { key: "amount", header: "Amount", value: (o) => o.amount, align: "right", cell: (o) => usd(o.amount) },
+];
+
+export function Orders({ orders }: { orders: Order[] }) {
+  return (
+    <DataTable
+      rows={orders}
+      columns={columns}
+      getRowId={(o) => o.id}
+      caption="Recent orders"
+      bulkActions={(selected, clear) => (
+        <button onClick={() => { refund(selected); clear(); }}>Refund {selected.length}</button>
+      )}
+    />
+  );
+}`,
+    props: [
+      { name: "rows", type: "T[]", description: "Any row type. The table is generic." },
+      {
+        name: "columns",
+        type: "DataTableColumn<T>[]",
+        description:
+          "key, header, value (used to sort and search), optional cell renderer, align, sortable, hideable, searchable.",
+      },
+      { name: "getRowId", type: "(row: T) => string", description: "Stable id used for selection." },
+      { name: "caption", type: "string", description: "Accessible name of the table and search box." },
+      { name: "pageSizeOptions", type: "number[]", default: "[5, 10, 25]", description: "First one is the default." },
+      { name: "selectable", type: "boolean", default: "true", description: "Checkbox column and select-all." },
+      {
+        name: "bulkActions",
+        type: "(selected: T[], clear: () => void) => ReactNode",
+        description: "Rendered in the bar that appears when rows are selected.",
+      },
+      { name: "emptyMessage", type: "string", description: "Shown when the search finds nothing." },
+      { name: "accent", type: "string", default: '"#818cf8"', description: "Any CSS color." },
+    ],
+    Demo: DataTableDemo,
+  },
+  {
+    slug: "progress-loader",
+    name: "Stepped Progress Loader",
+    type: "loader",
+    week: 3,
+    description:
+      "A loader for long multi-stage jobs: one bar segment per stage, measured and unmeasured stages, a time-left estimate that ignores pauses, and pause, resume, cancel and retry.",
+    sourceFile: "src/components/ui/progress-loader.tsx",
+    usage: `import { ProgressLoader } from "@/components/ui/progress-loader";
+
+const stages = [
+  { id: "upload", label: "Uploading files" },
+  { id: "build", label: "Building" },
+  { id: "live", label: "Going live" },
+];
+
+export function Deploy({ job }: { job: DeployJob }) {
+  return (
+    <ProgressLoader
+      key={job.runId}               // new key = fresh time-left estimate
+      title="Deploying my-site"
+      stages={stages}
+      current={job.stageIndex}
+      progress={job.measurable ? job.stageProgress : null}  // null = moving bar
+      status={job.status}           // "idle" | "running" | "paused" | "error" | "done"
+      errorMessage={job.error}
+      onPause={job.pause}
+      onResume={job.resume}
+      onCancel={job.cancel}
+      onRetry={job.retry}
+    />
+  );
+}`,
+    props: [
+      { name: "title", type: "string", description: "Job name, also labels the progress bar." },
+      { name: "stages", type: "{ id; label; detail? }[]", description: "One bar segment and one list row each." },
+      { name: "current", type: "number", description: "Index of the stage in progress." },
+      {
+        name: "progress",
+        type: "number | null",
+        description: "0 to 1 within the current stage, or null when it can't be measured.",
+      },
+      {
+        name: "status",
+        type: '"idle" | "running" | "paused" | "error" | "done"',
+        description: "Drives icons, colors, buttons and the spoken status.",
+      },
+      { name: "errorMessage", type: "string", description: "Shown in an alert when status is error." },
+      {
+        name: "showEta",
+        type: "boolean",
+        default: "true",
+        description: "Time left, from progress per second of running time.",
+      },
+      {
+        name: "onPause / onResume / onCancel / onRetry",
+        type: "() => void",
+        description: "Each button only appears when its handler is passed.",
+      },
+      { name: "accent", type: "string", default: '"#38bdf8"', description: "Any CSS color. Turns red on error." },
+    ],
+    Demo: ProgressLoaderDemo,
   },
 ];
 
