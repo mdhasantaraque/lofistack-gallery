@@ -16,6 +16,9 @@ Stack: Next.js (App Router) · React · TypeScript · Tailwind CSS · deployed o
 | 3    | form   | Multi-Step Form Wizard | `/components/form-wizard`   | [form-wizard.tsx](src/components/ui/form-wizard.tsx)                   |
 | 3    | table  | Smart Data Table      | `/components/data-table`     | [data-table.tsx](src/components/ui/data-table.tsx)                     |
 | 3    | loader | Stepped Progress Loader | `/components/progress-loader` | [progress-loader.tsx](src/components/ui/progress-loader.tsx)       |
+| 4    | navbar | Scrollspy Navbar      | `/components/scrollspy-navbar` | [scrollspy-navbar.tsx](src/components/ui/scrollspy-navbar.tsx)       |
+| 4    | section | Searchable FAQ Section | `/components/faq-section`   | [faq-section.tsx](src/components/ui/faq-section.tsx)                   |
+| 4    | input  | Mention Composer      | `/components/mention-composer` | [mention-composer.tsx](src/components/ui/mention-composer.tsx)       |
 
 ## Adding a component
 

@@ -7,6 +7,9 @@ import ActivityHeatmapDemo from "@/components/demos/activity-heatmap-demo";
 import FormWizardDemo from "@/components/demos/form-wizard-demo";
 import DataTableDemo from "@/components/demos/data-table-demo";
 import ProgressLoaderDemo from "@/components/demos/progress-loader-demo";
+import ScrollspyNavbarDemo from "@/components/demos/scrollspy-navbar-demo";
+import FaqSectionDemo from "@/components/demos/faq-section-demo";
+import MentionComposerDemo from "@/components/demos/mention-composer-demo";
 
 /** Plain labels from the challenge brief. Used to keep components distinct. */
 export type UiType =
@@ -527,6 +530,182 @@ export function Deploy({ job }: { job: DeployJob }) {
       { name: "accent", type: "string", default: '"#38bdf8"', description: "Any CSS color. Turns red on error." },
     ],
     Demo: ProgressLoaderDemo,
+  },
+  {
+    slug: "scrollspy-navbar",
+    name: "Scrollspy Navbar",
+    type: "navbar",
+    week: 4,
+    description:
+      "A sticky navbar that hides while you read down and returns on scroll up, condenses after the top, underlines the section in view, and folds into an accessible mobile menu.",
+    sourceFile: "src/components/ui/scrollspy-navbar.tsx",
+    usage: `"use client";
+
+import { ScrollspyNavbar } from "@/components/ui/scrollspy-navbar";
+
+// Each id must match a section element on the page.
+const sections = [
+  { id: "overview", label: "Overview" },
+  { id: "features", label: "Features" },
+  { id: "pricing", label: "Pricing" },
+];
+
+export function SiteHeader() {
+  return (
+    <ScrollspyNavbar
+      brand={<span>Orbit</span>}
+      sections={sections}
+      actions={<a href="/signup">Get started</a>}
+      // scrollContainer={ref}  // for a scrolling div instead of the window
+    />
+  );
+}`,
+    props: [
+      { name: "brand", type: "ReactNode", description: "Logo or name on the left." },
+      {
+        name: "sections",
+        type: "{ id: string; label: string }[]",
+        description: "Links, each pointing at a section id.",
+      },
+      { name: "actions", type: "ReactNode", description: "Right-hand slot. Moves into the mobile menu on phones." },
+      {
+        name: "scrollContainer",
+        type: "RefObject<HTMLElement>",
+        default: "window",
+        description: "Watch a scrolling element instead of the window.",
+      },
+      {
+        name: "hideOnScroll",
+        type: "boolean",
+        default: "true",
+        description: "Slide away on scroll down, back on scroll up.",
+      },
+      {
+        name: "condenseAt",
+        type: "number",
+        default: "24",
+        description: "Pixels scrolled before the bar condenses and blurs.",
+      },
+      {
+        name: "onActiveChange",
+        type: "(id: string) => void",
+        description: "Fires when the highlighted section changes.",
+      },
+      {
+        name: "accent",
+        type: "string",
+        default: '"#a78bfa"',
+        description: "Any CSS color for the underline and focus rings.",
+      },
+    ],
+    Demo: ScrollspyNavbarDemo,
+  },
+  {
+    slug: "faq-section",
+    name: "Searchable FAQ Section",
+    type: "section",
+    week: 4,
+    description:
+      "An FAQ section with search that highlights matches, topic filters with counts, an animated accordion, links straight to any answer, and a was-this-helpful prompt.",
+    sourceFile: "src/components/ui/faq-section.tsx",
+    usage: `import { FaqSection } from "@/components/ui/faq-section";
+
+const items = [
+  {
+    id: "free-plan",
+    category: "Billing",
+    question: "Is there a free plan?",
+    answer: "Yes. Starter is free forever.\\n\\nYou only need a card to upgrade.",
+    keywords: "cost price trial",
+  },
+  // ...
+];
+
+export function Faq() {
+  return (
+    <FaqSection
+      items={items}
+      defaultOpen={["free-plan"]}
+      onFeedback={(id, helpful) => track("faq_feedback", { id, helpful })}
+      emptyState={<a href="mailto:support@example.com">Email support</a>}
+    />
+  );
+}`,
+    props: [
+      {
+        name: "items",
+        type: "{ id; question; answer; category?; keywords? }[]",
+        description: "answer is plain text; blank lines make paragraphs. keywords are searched but not shown.",
+      },
+      { name: "title / description", type: "string", description: "Section heading and intro." },
+      {
+        name: "allowMultiple",
+        type: "boolean",
+        default: "true",
+        description: "When false, opening one closes the rest.",
+      },
+      { name: "defaultOpen", type: "string[]", default: "[]", description: "Ids open on first render." },
+      {
+        name: "deepLink",
+        type: "boolean",
+        default: "true",
+        description: "Keeps #faq-{id} in the URL and opens that answer on load. Adds Copy link.",
+      },
+      { name: "onFeedback", type: "(id, helpful) => void", description: "Shows Was this helpful? under each answer." },
+      { name: "emptyState", type: "ReactNode", description: "Shown when nothing matches, e.g. a contact link." },
+      { name: "accent", type: "string", default: '"#a78bfa"', description: "Any CSS color." },
+    ],
+    Demo: FaqSectionDemo,
+  },
+  {
+    slug: "mention-composer",
+    name: "Mention Composer",
+    type: "input",
+    week: 4,
+    description:
+      "A comment box with @mention suggestions, mentions highlighted inside the text, a who-gets-notified line, a character-limit ring and Ctrl+Enter to send.",
+    sourceFile: "src/components/ui/mention-composer.tsx",
+    usage: `"use client";
+
+import { MentionComposer, type MentionUser } from "@/components/ui/mention-composer";
+
+export function CommentBox({ team }: { team: MentionUser[] }) {
+  return (
+    <MentionComposer
+      users={team}            // [{ id, name, handle, role?, color? }]
+      label="Add a comment"
+      maxLength={280}
+      onSubmit={async ({ text, mentions }) => {
+        await api.comments.create({ text, notify: mentions.map((m) => m.id) });
+      }}
+    />
+  );
+}`,
+    props: [
+      { name: "users", type: "{ id; name; handle; role?; color? }[]", description: "People who can be mentioned." },
+      { name: "label", type: "string", description: "Visible label of the text box." },
+      {
+        name: "onSubmit",
+        type: "({ text, mentions }) => void | Promise<void>",
+        description: "Clears on success, shows the error on failure.",
+      },
+      {
+        name: "maxLength",
+        type: "number",
+        default: "280",
+        description: "Ring fills up, turns amber at 90% and red over the limit.",
+      },
+      { name: "placeholder", type: "string", description: "Hint inside the empty box." },
+      { name: "submitLabel", type: "string", default: '"Comment"', description: "Button text." },
+      { name: "maxSuggestions", type: "number", default: "6", description: "Rows in the suggestion list." },
+      {
+        name: "accent",
+        type: "string",
+        default: '"#a78bfa"',
+        description: "Any CSS color for pills, ring and button.",
+      },
+    ],
+    Demo: MentionComposerDemo,
   },
 ];
 
