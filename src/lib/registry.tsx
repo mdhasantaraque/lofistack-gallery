@@ -10,6 +10,9 @@ import ProgressLoaderDemo from "@/components/demos/progress-loader-demo";
 import ScrollspyNavbarDemo from "@/components/demos/scrollspy-navbar-demo";
 import FaqSectionDemo from "@/components/demos/faq-section-demo";
 import MentionComposerDemo from "@/components/demos/mention-composer-demo";
+import SplitButtonDemo from "@/components/demos/split-button-demo";
+import ProductCardDemo from "@/components/demos/product-card-demo";
+import DonutChartDemo from "@/components/demos/donut-chart-demo";
 
 /** Plain labels from the challenge brief. Used to keep components distinct. */
 export type UiType =
@@ -706,6 +709,183 @@ export function CommentBox({ team }: { team: MentionUser[] }) {
       },
     ],
     Demo: MentionComposerDemo,
+  },
+  {
+    slug: "split-button",
+    name: "Split Button",
+    type: "button",
+    week: 5,
+    description:
+      "A main action joined to a menu of related ones, with full menu keyboard support, typeahead, disabled and danger items, and a choice mode that remembers which action the button runs.",
+    sourceFile: "src/components/ui/split-button.tsx",
+    usage: `"use client";
+
+import { SplitButton } from "@/components/ui/split-button";
+
+export function MergeButton({ pr }: { pr: PullRequest }) {
+  return (
+    <SplitButton
+      mode="choice"              // menu picks what the button does
+      defaultActionId="squash"
+      menuLabel="Select merge method"
+      actions={[
+        { id: "merge", label: "Create a merge commit", onSelect: () => pr.merge("merge") },
+        { id: "squash", label: "Squash and merge", onSelect: () => pr.merge("squash") },
+        { id: "rebase", label: "Rebase and merge", onSelect: () => pr.merge("rebase") },
+      ]}
+    />
+  );
+}`,
+    props: [
+      {
+        name: "actions",
+        type: "{ id; label; onSelect; description?; icon?; shortcut?; disabled?; danger? }[]",
+        description: "In menu mode the first one is the main button.",
+      },
+      {
+        name: "mode",
+        type: '"menu" | "choice"',
+        default: '"menu"',
+        description: "choice: picking from the menu changes what the button runs, with a check on the current one.",
+      },
+      { name: "defaultActionId", type: "string", description: "Starting choice in choice mode." },
+      {
+        name: "menuLabel",
+        type: "string",
+        default: '"More options"',
+        description: "Accessible name of the arrow button.",
+      },
+      { name: "size", type: '"sm" | "md"', default: '"md"', description: "Height and menu width." },
+      {
+        name: "loading",
+        type: "boolean",
+        default: "false",
+        description: "Spinner on the main button, both halves blocked.",
+      },
+      { name: "disabled", type: "boolean", default: "false", description: "Disables both halves." },
+      {
+        name: "align",
+        type: '"start" | "end"',
+        default: '"end"',
+        description: "Menu edge. It also flips upwards when there's no room below.",
+      },
+      { name: "accent", type: "string", default: '"#818cf8"', description: "Any CSS color." },
+    ],
+    Demo: SplitButtonDemo,
+  },
+  {
+    slug: "product-card",
+    name: "Product Card",
+    type: "card",
+    week: 5,
+    description:
+      "A shop product card with a swipeable gallery per color, color and size pickers with stock levels, a quantity stepper, wishlist toggle, sale badge, rating and async add to cart.",
+    sourceFile: "src/components/ui/product-card.tsx",
+    usage: `"use client";
+
+import { ProductCard } from "@/components/ui/product-card";
+
+export function Sneaker({ product }: { product: Product }) {
+  return (
+    <ProductCard
+      brand="Lofi Runners"
+      name={product.name}
+      price={96}
+      compareAtPrice={120}          // shows -20% and a strike-through
+      rating={{ value: 4.6, count: 1284 }}
+      colors={product.colors.map((c) => ({
+        id: c.id,
+        name: c.name,
+        swatch: c.hex,
+        images: c.photos.map((src) => <img key={src} src={src} alt="" className="size-full object-cover" />),
+      }))}
+      sizes={product.sizes}         // [{ id, label, stock }]
+      onAddToCart={({ colorId, sizeId, quantity }) => cart.add(product.id, colorId, sizeId, quantity)}
+    />
+  );
+}`,
+    props: [
+      {
+        name: "name / brand",
+        type: "string",
+        description: "Product name (also the card's accessible name) and brand.",
+      },
+      {
+        name: "price / compareAtPrice",
+        type: "number",
+        description: "A higher compareAtPrice adds a strike-through and % off badge.",
+      },
+      {
+        name: "currency / locale",
+        type: "string",
+        default: '"USD" / "en-US"',
+        description: "Passed to Intl.NumberFormat.",
+      },
+      { name: "rating", type: "{ value: number; count: number }", description: "Partial stars, spoken as a sentence." },
+      {
+        name: "colors",
+        type: "{ id; name; swatch; images: ReactNode[] }[]",
+        description: "Each color has its own gallery.",
+      },
+      { name: "sizes", type: "{ id; label; stock }[]", description: "stock 0 is sold out and skipped by arrow keys." },
+      {
+        name: "onAddToCart",
+        type: "({ colorId, sizeId, quantity }) => void | Promise<void>",
+        description: "Adding…, then Added, or the error.",
+      },
+      { name: "badge", type: "string", description: "Label over the image, e.g. New." },
+      {
+        name: "lowStockAt / maxQuantity",
+        type: "number",
+        default: "3 / 10",
+        description: "Low stock warning and stepper cap.",
+      },
+      { name: "defaultWishlisted / onWishlistChange", type: "boolean / (saved) => void", description: "Heart toggle." },
+      { name: "accent", type: "string", default: '"#a78bfa"', description: "Any CSS color." },
+    ],
+    Demo: ProductCardDemo,
+  },
+  {
+    slug: "donut-chart",
+    name: "Interactive Donut Chart",
+    type: "chart",
+    week: 5,
+    description:
+      "A donut chart whose legend toggles series on and off with animated slices, a center readout for the hovered slice, and a hidden data table so screen readers get the same numbers.",
+    sourceFile: "src/components/ui/donut-chart.tsx",
+    usage: `import { DonutChart } from "@/components/ui/donut-chart";
+
+export function TrafficSources({ rows }: { rows: { source: string; visits: number }[] }) {
+  return (
+    <DonutChart
+      title="Visitors by source, last 30 days"
+      totalLabel="Visitors"
+      data={rows.map((r) => ({ id: r.source, label: r.source, value: r.visits }))}
+      formatValue={(n) => n.toLocaleString()}
+      onHiddenChange={(ids) => console.log("hidden", ids)}
+    />
+  );
+}`,
+    props: [
+      {
+        name: "data",
+        type: "{ id; label; value; color? }[]",
+        description: "Missing colors come from a dark-friendly palette.",
+      },
+      { name: "title", type: "string", description: "Legend heading and caption of the screen reader table." },
+      { name: "formatValue", type: "(n) => string", description: "Used in the center, legend and table." },
+      { name: "totalLabel", type: "string", default: '"Total"', description: "Center label when nothing is hovered." },
+      {
+        name: "size / thickness",
+        type: "number",
+        default: "240 / 28",
+        description: "Diameter and ring width in px. Shrinks to fit.",
+      },
+      { name: "sortByValue", type: "boolean", default: "true", description: "Largest slice first, from 12 o'clock." },
+      { name: "defaultHidden", type: "string[]", default: "[]", description: "Series hidden on first render." },
+      { name: "onHiddenChange", type: "(ids: string[]) => void", description: "Fires when a legend item is toggled." },
+    ],
+    Demo: DonutChartDemo,
   },
 ];
 

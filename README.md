@@ -19,6 +19,9 @@ Stack: Next.js (App Router) · React · TypeScript · Tailwind CSS · deployed o
 | 4    | navbar | Scrollspy Navbar      | `/components/scrollspy-navbar` | [scrollspy-navbar.tsx](src/components/ui/scrollspy-navbar.tsx)       |
 | 4    | section | Searchable FAQ Section | `/components/faq-section`   | [faq-section.tsx](src/components/ui/faq-section.tsx)                   |
 | 4    | input  | Mention Composer      | `/components/mention-composer` | [mention-composer.tsx](src/components/ui/mention-composer.tsx)       |
+| 5    | button | Split Button          | `/components/split-button`   | [split-button.tsx](src/components/ui/split-button.tsx)                 |
+| 5    | card   | Product Card          | `/components/product-card`   | [product-card.tsx](src/components/ui/product-card.tsx)                 |
+| 5    | chart  | Interactive Donut Chart | `/components/donut-chart`  | [donut-chart.tsx](src/components/ui/donut-chart.tsx)                   |
 
 ## Adding a component
 
