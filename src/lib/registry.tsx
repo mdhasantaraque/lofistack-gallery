@@ -19,6 +19,9 @@ import UploadQueueDemo from "@/components/demos/upload-queue-demo";
 import ComparisonTableDemo from "@/components/demos/comparison-table-demo";
 import MegaMenuNavbarDemo from "@/components/demos/mega-menu-navbar-demo";
 import ChangelogSectionDemo from "@/components/demos/changelog-section-demo";
+import DateRangePickerDemo from "@/components/demos/date-range-picker-demo";
+import LineChartDemo from "@/components/demos/line-chart-demo";
+import ImageLightboxDemo from "@/components/demos/image-lightbox-demo";
 
 /** Plain labels from the challenge brief. Used to keep components distinct. */
 export type UiType =
@@ -1196,6 +1199,132 @@ export function WhatsNew({ releases }: { releases: ChangelogEntry[] }) {
       { name: "accent", type: "string", default: '"#a78bfa"', description: "Any CSS color." },
     ],
     Demo: ChangelogSectionDemo,
+  },
+  {
+    slug: "date-range-picker",
+    name: "Date Range Picker",
+    type: "input",
+    week: 8,
+    description:
+      "A two-month range picker with a live hover preview, quick presets, full calendar keyboard support, min and max dates, a longest-range limit and time-zone-safe dates.",
+    sourceFile: "src/components/ui/date-range-picker.tsx",
+    usage: `"use client";
+
+import { useState } from "react";
+import { DateRangePicker, type DateRange } from "@/components/ui/date-range-picker";
+
+export function ReportFilter() {
+  const [range, setRange] = useState<DateRange>({ start: null, end: null });
+
+  return (
+    <DateRangePicker
+      label="Report period"
+      value={range}               // { start: "2026-11-02", end: "2026-11-15" }
+      onChange={setRange}
+      maxDate="2026-12-31"
+      maxDays={90}
+    />
+  );
+}`,
+    props: [
+      {
+        name: "value / onChange",
+        type: "{ start; end } / (range) => void",
+        description: "Dates are YYYY-MM-DD strings, or null.",
+      },
+      { name: "label", type: "string", default: '"Dates"', description: "Visible label of the trigger." },
+      { name: "minDate / maxDate", type: "string", description: "Days outside are disabled and skipped." },
+      {
+        name: "maxDays",
+        type: "number",
+        description: "Longest range, counting both ends. Too-far days disable while picking.",
+      },
+      {
+        name: "presets",
+        type: "{ label; range(today) }[] | false",
+        default: "defaultPresets",
+        description: "Quick ranges like Last 7 days. false hides them.",
+      },
+      { name: "weekStart", type: "0 | 1", default: "1", description: "Sunday or Monday first." },
+      { name: "locale", type: "string", default: '"en-US"', description: "Month, weekday and date formatting." },
+      { name: "accent", type: "string", default: '"#38bdf8"', description: "Any CSS color." },
+    ],
+    Demo: DateRangePickerDemo,
+  },
+  {
+    slug: "line-chart",
+    name: "Interactive Line Chart",
+    type: "chart",
+    week: 8,
+    description:
+      "A multi-series line chart with clean axis ticks, a crosshair tooltip you can move with the mouse or arrow keys, legend toggles with change since start, area shading and a hidden data table.",
+    sourceFile: "src/components/ui/line-chart.tsx",
+    usage: `import { LineChart } from "@/components/ui/line-chart";
+
+export function Traffic({ days }: { days: { date: string; visitors: number; signups: number }[] }) {
+  return (
+    <LineChart
+      title="Daily traffic"
+      series={[
+        { id: "visitors", label: "Visitors", data: days.map((d) => ({ x: d.date, y: d.visitors })) },
+        { id: "signups", label: "Sign-ups", data: days.map((d) => ({ x: d.date, y: d.signups })) },
+      ]}
+      formatY={(n) => n.toLocaleString()}
+    />
+  );
+}`,
+    props: [
+      {
+        name: "series",
+        type: "{ id; label; color?; data: { x; y }[] }[]",
+        description: "All series share the same x values in the same order.",
+      },
+      { name: "title", type: "string", description: "Accessible name and table caption." },
+      { name: "height", type: "number", default: "260", description: "Height in px. Width follows the container." },
+      {
+        name: "formatY / formatX",
+        type: "(n) => string / (x) => string",
+        description: "Axis, tooltip and table labels.",
+      },
+      { name: "area", type: "boolean", default: "true", description: "Gradient fill under the first visible series." },
+    ],
+    Demo: LineChartDemo,
+  },
+  {
+    slug: "image-lightbox",
+    name: "Image Lightbox",
+    type: "modal",
+    week: 8,
+    description:
+      "A thumbnail grid that opens a full-screen viewer: previous and next by button, arrow key or swipe, click or Z to zoom with drag to pan, captions, a thumbnail strip and focus back to the grid.",
+    sourceFile: "src/components/ui/image-lightbox.tsx",
+    usage: `import { ImageLightbox } from "@/components/ui/image-lightbox";
+
+export function ProjectPhotos() {
+  return (
+    <ImageLightbox
+      label="Project photos"
+      columns={3}
+      images={[
+        { src: "/photos/site-1.jpg", thumbSrc: "/photos/site-1-small.jpg", alt: "Front of the new office", caption: "Opening day" },
+        { src: "/photos/site-2.jpg", alt: "Team at the launch" },
+      ]}
+    />
+  );
+}`,
+    props: [
+      {
+        name: "images",
+        type: "{ src; alt; caption?; thumbSrc? }[]",
+        description: "alt is required. thumbSrc is a smaller file for the grid and strip.",
+      },
+      { name: "label", type: "string", description: "Accessible name of the gallery." },
+      { name: "columns", type: "2 | 3 | 4", default: "3", description: "Grid columns on wide screens." },
+      { name: "loop", type: "boolean", default: "true", description: "Wrap from last to first." },
+      { name: "zoomScale", type: "number", default: "2", description: "How far zoom magnifies." },
+      { name: "accent", type: "string", default: '"#a78bfa"', description: "Any CSS color." },
+    ],
+    Demo: ImageLightboxDemo,
   },
 ];
 

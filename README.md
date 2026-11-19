@@ -28,6 +28,9 @@ Stack: Next.js (App Router) · React · TypeScript · Tailwind CSS · deployed o
 | 7    | table  | Plan Comparison Table | `/components/comparison-table` | [comparison-table.tsx](src/components/ui/comparison-table.tsx)       |
 | 7    | navbar | Mega Menu Navbar      | `/components/mega-menu-navbar` | [mega-menu-navbar.tsx](src/components/ui/mega-menu-navbar.tsx)       |
 | 7    | section | Changelog Section    | `/components/changelog-section` | [changelog-section.tsx](src/components/ui/changelog-section.tsx)    |
+| 8    | input  | Date Range Picker     | `/components/date-range-picker` | [date-range-picker.tsx](src/components/ui/date-range-picker.tsx)    |
+| 8    | chart  | Interactive Line Chart | `/components/line-chart`    | [line-chart.tsx](src/components/ui/line-chart.tsx)                     |
+| 8    | modal  | Image Lightbox        | `/components/image-lightbox` | [image-lightbox.tsx](src/components/ui/image-lightbox.tsx)             |
 
 ## Adding a component
 
