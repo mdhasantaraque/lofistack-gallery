@@ -16,6 +16,9 @@ import DonutChartDemo from "@/components/demos/donut-chart-demo";
 import CommandPaletteDemo from "@/components/demos/command-palette-demo";
 import SettingsFormDemo from "@/components/demos/settings-form-demo";
 import UploadQueueDemo from "@/components/demos/upload-queue-demo";
+import ComparisonTableDemo from "@/components/demos/comparison-table-demo";
+import MegaMenuNavbarDemo from "@/components/demos/mega-menu-navbar-demo";
+import ChangelogSectionDemo from "@/components/demos/changelog-section-demo";
 
 /** Plain labels from the challenge brief. Used to keep components distinct. */
 export type UiType =
@@ -1050,6 +1053,149 @@ export function Assets() {
       { name: "accent", type: "string", default: '"#38bdf8"', description: "Any CSS color." },
     ],
     Demo: UploadQueueDemo,
+  },
+  {
+    slug: "comparison-table",
+    name: "Plan Comparison Table",
+    type: "table",
+    week: 7,
+    description:
+      "A plan comparison table with sticky header and feature column, collapsible groups, an Only show differences switch, feature hints, a highlighted plan and a plan picker on phones.",
+    sourceFile: "src/components/ui/comparison-table.tsx",
+    usage: `import { ComparisonTable } from "@/components/ui/comparison-table";
+
+export function ComparePlans() {
+  return (
+    <ComparisonTable
+      caption="Compare plans"
+      plans={[
+        { id: "free", name: "Free", price: "$0", cta: { label: "Start", href: "/signup" } },
+        { id: "pro", name: "Pro", price: "$24", highlighted: true, badge: "Popular", cta: { label: "Upgrade", href: "/pro" } },
+      ]}
+      groups={[
+        {
+          id: "core",
+          label: "Core",
+          features: [
+            { id: "projects", label: "Projects", values: { free: "3", pro: "Unlimited" } },
+            { id: "domains", label: "Custom domains", hint: "Use your own domain.", values: { free: false, pro: true } },
+            { id: "comments", label: "Comments", values: { free: false, pro: "partial" } },
+          ],
+        },
+      ]}
+    />
+  );
+}`,
+    props: [
+      {
+        name: "plans",
+        type: "{ id; name; price?; note?; badge?; highlighted?; cta? }[]",
+        description: "One column each. highlighted tints the column and fills its button.",
+      },
+      {
+        name: "groups",
+        type: "{ id; label; features: { id; label; hint?; values }[] }[]",
+        description: 'values maps plan id to true, false, "partial", or any text or number.',
+      },
+      { name: "caption", type: "string", description: "Accessible name of the table." },
+      { name: "defaultCollapsed", type: "string[]", default: "[]", description: "Group ids that start collapsed." },
+      { name: "maxHeight", type: "string", default: '"70vh"', description: "Scroll height, so the header can stick." },
+      { name: "accent", type: "string", default: '"#a78bfa"', description: "Any CSS color." },
+    ],
+    Demo: ComparisonTableDemo,
+  },
+  {
+    slug: "mega-menu-navbar",
+    name: "Mega Menu Navbar",
+    type: "navbar",
+    week: 7,
+    description:
+      "A site navbar with wide dropdown panels of grouped links and a featured card, hover intent, full keyboard support, close on Escape or outside click, and an accordion drawer on phones.",
+    sourceFile: "src/components/ui/mega-menu-navbar.tsx",
+    usage: `import { MegaMenuNavbar } from "@/components/ui/mega-menu-navbar";
+
+export function SiteHeader() {
+  return (
+    <MegaMenuNavbar
+      brand={<Logo />}
+      items={[
+        {
+          id: "product",
+          label: "Product",
+          sections: [
+            {
+              title: "Build",
+              links: [{ label: "Deployments", href: "/deployments", description: "Push to deploy." }],
+            },
+          ],
+          feature: { title: "Analytics is here", description: "No cookie banner.", href: "/blog/analytics", cta: "Read more" },
+        },
+        { id: "pricing", label: "Pricing", href: "/pricing" },
+      ]}
+      actions={<a href="/signup">Sign up</a>}
+    />
+  );
+}`,
+    props: [
+      { name: "brand", type: "ReactNode", description: "Logo or name on the left." },
+      {
+        name: "items",
+        type: "{ id; label; href?; sections?; feature? }[]",
+        description: "Items with sections open a panel; the rest are plain links.",
+      },
+      {
+        name: "sections",
+        type: "{ title; links: { label; href; description?; icon?; badge? }[] }[]",
+        description: "Columns of links inside a panel.",
+      },
+      {
+        name: "feature",
+        type: "{ eyebrow?; title; description; href; cta }",
+        description: "Highlight card on the right.",
+      },
+      { name: "actions", type: "ReactNode", description: "Right-hand slot. Moves into the drawer on phones." },
+      { name: "hoverDelay", type: "number", default: "120", description: "ms before a hovered item opens." },
+      { name: "accent", type: "string", default: '"#818cf8"', description: "Any CSS color." },
+    ],
+    Demo: MegaMenuNavbarDemo,
+  },
+  {
+    slug: "changelog-section",
+    name: "Changelog Section",
+    type: "section",
+    week: 7,
+    description:
+      "A release timeline grouped by month with New, Improved, Fixed and Security filters, a Latest badge, expandable long releases, a link to each release and Load older releases.",
+    sourceFile: "src/components/ui/changelog-section.tsx",
+    usage: `import { ChangelogSection } from "@/components/ui/changelog-section";
+
+export function WhatsNew({ releases }: { releases: ChangelogEntry[] }) {
+  return (
+    <ChangelogSection
+      title="What's new"
+      entries={releases}   // [{ version, date: "2026-11-18", title, summary?, changes: [{ kind: "new", text }] }]
+      pageSize={5}
+    />
+  );
+}`,
+    props: [
+      {
+        name: "entries",
+        type: "{ version; date; title; summary?; changes: { kind; text }[] }[]",
+        description: 'kind is "new", "improved", "fixed" or "security". Dates are YYYY-MM-DD.',
+      },
+      {
+        name: "title / description",
+        type: "string",
+        default: '"Changelog"',
+        description: "Section heading and intro.",
+      },
+      { name: "pageSize", type: "number", default: "3", description: "Releases shown first and per Load older click." },
+      { name: "collapseAfter", type: "number", default: "4", description: "Changes shown before Show N more." },
+      { name: "locale", type: "string", default: '"en-US"', description: "Month and date formatting." },
+      { name: "accent", type: "string", default: '"#a78bfa"', description: "Any CSS color." },
+    ],
+    Demo: ChangelogSectionDemo,
   },
 ];
 

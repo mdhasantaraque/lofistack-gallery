@@ -25,6 +25,9 @@ Stack: Next.js (App Router) · React · TypeScript · Tailwind CSS · deployed o
 | 6    | modal  | Command Palette       | `/components/command-palette` | [command-palette.tsx](src/components/ui/command-palette.tsx)        |
 | 6    | form   | Profile Settings Form | `/components/settings-form`  | [settings-form.tsx](src/components/ui/settings-form.tsx)               |
 | 6    | loader | File Upload Queue     | `/components/upload-queue`   | [upload-queue.tsx](src/components/ui/upload-queue.tsx)                 |
+| 7    | table  | Plan Comparison Table | `/components/comparison-table` | [comparison-table.tsx](src/components/ui/comparison-table.tsx)       |
+| 7    | navbar | Mega Menu Navbar      | `/components/mega-menu-navbar` | [mega-menu-navbar.tsx](src/components/ui/mega-menu-navbar.tsx)       |
+| 7    | section | Changelog Section    | `/components/changelog-section` | [changelog-section.tsx](src/components/ui/changelog-section.tsx)    |
 
 ## Adding a component
 
