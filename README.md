@@ -22,6 +22,9 @@ Stack: Next.js (App Router) · React · TypeScript · Tailwind CSS · deployed o
 | 5    | button | Split Button          | `/components/split-button`   | [split-button.tsx](src/components/ui/split-button.tsx)                 |
 | 5    | card   | Product Card          | `/components/product-card`   | [product-card.tsx](src/components/ui/product-card.tsx)                 |
 | 5    | chart  | Interactive Donut Chart | `/components/donut-chart`  | [donut-chart.tsx](src/components/ui/donut-chart.tsx)                   |
+| 6    | modal  | Command Palette       | `/components/command-palette` | [command-palette.tsx](src/components/ui/command-palette.tsx)        |
+| 6    | form   | Profile Settings Form | `/components/settings-form`  | [settings-form.tsx](src/components/ui/settings-form.tsx)               |
+| 6    | loader | File Upload Queue     | `/components/upload-queue`   | [upload-queue.tsx](src/components/ui/upload-queue.tsx)                 |
 
 ## Adding a component
 

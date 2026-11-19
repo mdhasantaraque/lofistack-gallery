@@ -13,6 +13,9 @@ import MentionComposerDemo from "@/components/demos/mention-composer-demo";
 import SplitButtonDemo from "@/components/demos/split-button-demo";
 import ProductCardDemo from "@/components/demos/product-card-demo";
 import DonutChartDemo from "@/components/demos/donut-chart-demo";
+import CommandPaletteDemo from "@/components/demos/command-palette-demo";
+import SettingsFormDemo from "@/components/demos/settings-form-demo";
+import UploadQueueDemo from "@/components/demos/upload-queue-demo";
 
 /** Plain labels from the challenge brief. Used to keep components distinct. */
 export type UiType =
@@ -886,6 +889,167 @@ export function TrafficSources({ rows }: { rows: { source: string; visits: numbe
       { name: "onHiddenChange", type: "(ids: string[]) => void", description: "Fires when a legend item is toggled." },
     ],
     Demo: DonutChartDemo,
+  },
+  {
+    slug: "command-palette",
+    name: "Command Palette",
+    type: "modal",
+    week: 6,
+    description:
+      "A Ctrl+K command palette: fuzzy search with highlighted matches, grouped and recent commands, nested pages like Change theme ›, shortcut hints and full keyboard control.",
+    sourceFile: "src/components/ui/command-palette.tsx",
+    usage: `"use client";
+
+import { useState } from "react";
+import { CommandPalette } from "@/components/ui/command-palette";
+
+export function AppCommands() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <CommandPalette
+      open={open}
+      onOpenChange={setOpen}        // Ctrl/Cmd+K toggles it by default
+      commands={[
+        { id: "new", label: "Create new project", group: "Actions", shortcut: ["Ctrl", "N"], perform: createProject },
+        {
+          id: "theme",
+          label: "Change theme",
+          group: "Preferences",
+          keywords: "dark light",
+          children: [
+            { id: "dark", label: "Dark", perform: () => setTheme("dark") },
+            { id: "light", label: "Light", perform: () => setTheme("light") },
+          ],
+        },
+      ]}
+    />
+  );
+}`,
+    props: [
+      { name: "open / onOpenChange", type: "boolean / (open) => void", description: "Controlled open state." },
+      {
+        name: "commands",
+        type: "{ id; label; group?; keywords?; shortcut?; icon?; perform?; children? }[]",
+        description: "children opens a nested page instead of running.",
+      },
+      {
+        name: "recentIds",
+        type: "string[]",
+        default: "[]",
+        description: "Shown under Recent while the search is empty.",
+      },
+      { name: "onRun", type: "(command) => void", description: "After a command runs, e.g. to update recents." },
+      {
+        name: "hotkey",
+        type: "string | null",
+        default: '"mod+k"',
+        description: "Global toggle. mod is Ctrl, or Cmd on Mac. null turns it off.",
+      },
+      { name: "placeholder", type: "string", description: "Search box hint." },
+      { name: "accent", type: "string", default: '"#a78bfa"', description: "Color of highlighted letters." },
+    ],
+    Demo: CommandPaletteDemo,
+  },
+  {
+    slug: "settings-form",
+    name: "Profile Settings Form",
+    type: "form",
+    week: 6,
+    description:
+      "A settings form that tracks unsaved changes: per-field Edited and Undo, a sticky save bar, async username check, photo preview, switches, Ctrl+S and a leave-page warning.",
+    sourceFile: "src/components/ui/settings-form.tsx",
+    usage: `"use client";
+
+import { SettingsForm } from "@/components/ui/settings-form";
+
+export function ProfilePage({ user }: { user: ProfileSettings }) {
+  return (
+    <SettingsForm
+      initialValues={user}
+      checkUsername={(name) => api.usernameAvailable(name)}
+      onSave={async (values, avatarFile) => {
+        if (avatarFile) await api.uploadAvatar(avatarFile);
+        await api.updateProfile(values);   // a rejection shows its message
+      }}
+    />
+  );
+}`,
+    props: [
+      {
+        name: "initialValues",
+        type: "ProfileSettings",
+        description: "avatarUrl, name, username, email, bio, website, timezone, emailDigest, mentions.",
+      },
+      {
+        name: "onSave",
+        type: "(values, avatarFile: File | null) => void | Promise<void>",
+        description: "On success the saved values become the new baseline.",
+      },
+      {
+        name: "checkUsername",
+        type: "(username) => Promise<boolean>",
+        description: "Resolve true when free. Runs 400 ms after typing stops; stale answers are ignored.",
+      },
+      { name: "timezones", type: "{ value; label }[]", description: "Options for the time zone select." },
+      { name: "bioLimit", type: "number", default: "160", description: "Character limit with a live counter." },
+      {
+        name: "maxAvatarSize",
+        type: "number",
+        default: "2 MB",
+        description: "Bigger photos are refused with a message.",
+      },
+      { name: "accent", type: "string", default: '"#34d399"', description: "Any CSS color." },
+    ],
+    Demo: SettingsFormDemo,
+  },
+  {
+    slug: "upload-queue",
+    name: "File Upload Queue",
+    type: "loader",
+    week: 6,
+    description:
+      "A drag-and-drop upload queue: parallel uploads with a limit, per-file and overall progress, speed and time left, cancel and retry, and file type, size and count checks. Plug in your own upload function.",
+    sourceFile: "src/components/ui/upload-queue.tsx",
+    usage: `"use client";
+
+import { UploadQueue, type UploadFn } from "@/components/ui/upload-queue";
+
+// Any upload works as long as it reports progress and honours the abort signal.
+const upload: UploadFn = (file, { onProgress, signal }) =>
+  new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("PUT", presignedUrlFor(file));
+    xhr.upload.onprogress = (e) => onProgress(e.loaded / e.total);
+    xhr.onload = () => (xhr.status < 300 ? resolve() : reject(new Error("Upload failed")));
+    xhr.onerror = () => reject(new Error("Network error"));
+    signal.addEventListener("abort", () => xhr.abort());
+    xhr.send(file);
+  });
+
+export function Assets() {
+  return <UploadQueue upload={upload} accept="image/*,.pdf" maxSize={10 * 1024 * 1024} concurrency={3} />;
+}`,
+    props: [
+      {
+        name: "upload",
+        type: "(file, { onProgress, signal }) => Promise<void>",
+        description: "Your upload. The queue handles order, limits, progress, cancel and retry.",
+      },
+      { name: "accept", type: "string", description: 'Like the input attribute, e.g. "image/*,.pdf".' },
+      {
+        name: "maxSize",
+        type: "number",
+        default: "10 MB",
+        description: "Bigger files are listed as errors, never sent.",
+      },
+      { name: "maxFiles", type: "number", default: "20", description: "Extra files are skipped with a notice." },
+      { name: "concurrency", type: "number", default: "2", description: "Files uploading at the same time." },
+      { name: "onComplete", type: "(done: UploadItem[]) => void", description: "When the queue goes idle." },
+      { name: "label", type: "string", default: '"Upload files"', description: "Drop zone heading." },
+      { name: "accent", type: "string", default: '"#38bdf8"', description: "Any CSS color." },
+    ],
+    Demo: UploadQueueDemo,
   },
 ];
 
