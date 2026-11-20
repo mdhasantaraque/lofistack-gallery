@@ -25,6 +25,9 @@ import ImageLightboxDemo from "@/components/demos/image-lightbox-demo";
 import UndoButtonDemo from "@/components/demos/undo-button-demo";
 import PostCardDemo from "@/components/demos/post-card-demo";
 import BreadcrumbsDemo from "@/components/demos/breadcrumbs-demo";
+import OtpFormDemo from "@/components/demos/otp-form-demo";
+import EditableGridDemo from "@/components/demos/editable-grid-demo";
+import SkeletonLoaderDemo from "@/components/demos/skeleton-loader-demo";
 
 /** Plain labels from the challenge brief. Used to keep components distinct. */
 export type UiType =
@@ -1465,6 +1468,137 @@ export function PageHeader() {
       { name: "accent", type: "string", default: '"#38bdf8"', description: "Focus ring color." },
     ],
     Demo: BreadcrumbsDemo,
+  },
+  {
+    slug: "otp-form",
+    name: "Verification Code Form",
+    type: "form",
+    week: 10,
+    description:
+      "A one-time code form: digit boxes with paste and SMS autofill, auto-advance and smart backspace, auto-submit, a shake with attempts left on a wrong code, a lockout and a resend countdown.",
+    sourceFile: "src/components/ui/otp-form.tsx",
+    usage: `"use client";
+
+import { OtpForm } from "@/components/ui/otp-form";
+
+export function VerifyEmail({ email }: { email: string }) {
+  return (
+    <OtpForm
+      description={<>We sent a code to {email}.</>}
+      onVerify={async (code) => (await api.verify(code)).ok}   // false or a rejection = wrong code
+      onResend={() => api.resendCode()}
+      resendAfter={30}
+      maxAttempts={5}
+    />
+  );
+}`,
+    props: [
+      {
+        name: "onVerify",
+        type: "(code) => Promise<boolean | void> | boolean | void",
+        description: "Resolve for a correct code; false or a rejection counts as wrong.",
+      },
+      {
+        name: "onResend",
+        type: "() => Promise<void> | void",
+        description: "Sends a new code, resets attempts and the timer.",
+      },
+      { name: "length", type: "number", default: "6", description: "Number of digit boxes." },
+      { name: "resendAfter", type: "number", default: "30", description: "Seconds before Resend unlocks." },
+      { name: "maxAttempts", type: "number", default: "5", description: "Wrong codes allowed before the lockout." },
+      { name: "autoSubmit", type: "boolean", default: "true", description: "Verify as soon as the last digit is in." },
+      { name: "title / description / successMessage", type: "string / ReactNode / string", description: "Texts." },
+      { name: "accent", type: "string", default: '"#a78bfa"', description: "Any CSS color." },
+    ],
+    Demo: OtpFormDemo,
+  },
+  {
+    slug: "editable-grid",
+    name: "Editable Grid",
+    type: "table",
+    week: 10,
+    description:
+      "A spreadsheet-style table: arrow keys between cells, type or Enter to edit, Tab and Enter to commit, Escape to cancel, per-column validation, undo and redo, copy and paste, edited markers and totals.",
+    sourceFile: "src/components/ui/editable-grid.tsx",
+    usage: `"use client";
+
+import { EditableGrid } from "@/components/ui/editable-grid";
+
+export function Budget({ rows }: { rows: GridRow[] }) {
+  return (
+    <EditableGrid
+      label="Project budget"
+      initialRows={rows}            // [{ id, item, category, hours, amount }]
+      columns={[
+        { key: "item", header: "Item", validate: (v) => (v ? null : "Item can't be empty") },
+        { key: "category", header: "Category", type: "select", options: ["Design", "Development"] },
+        { key: "hours", header: "Hours", type: "number", total: true },
+        { key: "amount", header: "Amount", type: "currency", total: true },
+      ]}
+      onChange={(next) => save(next)}
+    />
+  );
+}`,
+    props: [
+      {
+        name: "columns",
+        type: "{ key; header; type?; options?; validate?; total?; width? }[]",
+        description: 'type is "text", "number", "currency" or "select". validate returns a message or null.',
+      },
+      { name: "initialRows", type: "{ id; ...values }[]", description: "Starting data. Edits are tracked against it." },
+      { name: "onChange", type: "(rows) => void", description: "After every edit, undo, redo, add or delete." },
+      { name: "label", type: "string", description: "Accessible name of the grid." },
+      { name: "newRow", type: "() => values", description: "Defaults for Add row." },
+      { name: "currency / locale", type: "string", default: '"USD" / "en-US"', description: "Number formatting." },
+      { name: "accent", type: "string", default: '"#38bdf8"', description: "Active cell and edited marker color." },
+    ],
+    Demo: EditableGridDemo,
+  },
+  {
+    slug: "skeleton-loader",
+    name: "Flash-free Skeleton Loader",
+    type: "loader",
+    week: 10,
+    description:
+      "Skeleton pieces plus a LoadingSwap wrapper that skips the skeleton for fast loads, keeps it up for a minimum time once shown, holds the layout while waiting and fades content in.",
+    sourceFile: "src/components/ui/skeleton-loader.tsx",
+    usage: `import { LoadingSwap, Skeleton } from "@/components/ui/skeleton-loader";
+
+export function TeamList({ loading, people }: { loading: boolean; people: Person[] }) {
+  return (
+    <LoadingSwap
+      loading={loading}
+      delay={200}          // under 200 ms: no skeleton at all
+      minDuration={500}    // once shown, at least 500 ms
+      skeleton={
+        <div className="flex items-center gap-3">
+          <Skeleton shape="circle" />
+          <Skeleton width="40%" />
+        </div>
+      }
+    >
+      <People list={people} />
+    </LoadingSwap>
+  );
+}`,
+    props: [
+      { name: "loading", type: "boolean", description: "Your loading flag." },
+      { name: "skeleton", type: "ReactNode", description: "Placeholder shaped like the content, built from Skeleton." },
+      { name: "delay", type: "number", default: "200", description: "ms to wait before showing the skeleton." },
+      { name: "minDuration", type: "number", default: "500", description: "Minimum ms the skeleton stays once shown." },
+      { name: "label", type: "string", default: '"Loading"', description: "Spoken while loading." },
+      {
+        name: "onSettled",
+        type: "(shownForMs) => void",
+        description: "How long the skeleton was visible; 0 if skipped.",
+      },
+      {
+        name: "Skeleton",
+        type: '{ shape?: "line" | "circle" | "block"; width?; height? }',
+        description: "One shimmering piece. Pulses instead with reduced motion.",
+      },
+    ],
+    Demo: SkeletonLoaderDemo,
   },
 ];
 

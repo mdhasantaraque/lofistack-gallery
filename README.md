@@ -34,6 +34,9 @@ Stack: Next.js (App Router) · React · TypeScript · Tailwind CSS · deployed o
 | 9    | button | Undoable Action Button | `/components/undo-button`   | [undo-button.tsx](src/components/ui/undo-button.tsx)                   |
 | 9    | card   | Social Post Card      | `/components/post-card`      | [post-card.tsx](src/components/ui/post-card.tsx)                       |
 | 9    | navbar | Responsive Breadcrumbs | `/components/breadcrumbs`   | [breadcrumbs.tsx](src/components/ui/breadcrumbs.tsx)                   |
+| 10   | form   | Verification Code Form | `/components/otp-form`      | [otp-form.tsx](src/components/ui/otp-form.tsx)                         |
+| 10   | table  | Editable Grid         | `/components/editable-grid`  | [editable-grid.tsx](src/components/ui/editable-grid.tsx)               |
+| 10   | loader | Flash-free Skeleton Loader | `/components/skeleton-loader` | [skeleton-loader.tsx](src/components/ui/skeleton-loader.tsx)    |
 
 ## Adding a component
 
