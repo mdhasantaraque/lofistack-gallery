@@ -22,6 +22,9 @@ import ChangelogSectionDemo from "@/components/demos/changelog-section-demo";
 import DateRangePickerDemo from "@/components/demos/date-range-picker-demo";
 import LineChartDemo from "@/components/demos/line-chart-demo";
 import ImageLightboxDemo from "@/components/demos/image-lightbox-demo";
+import UndoButtonDemo from "@/components/demos/undo-button-demo";
+import PostCardDemo from "@/components/demos/post-card-demo";
+import BreadcrumbsDemo from "@/components/demos/breadcrumbs-demo";
 
 /** Plain labels from the challenge brief. Used to keep components distinct. */
 export type UiType =
@@ -1325,6 +1328,143 @@ export function ProjectPhotos() {
       { name: "accent", type: "string", default: '"#a78bfa"', description: "Any CSS color." },
     ],
     Demo: ImageLightboxDemo,
+  },
+  {
+    slug: "undo-button",
+    name: "Undoable Action Button",
+    type: "button",
+    week: 9,
+    description:
+      "An action button with an optional confirm click, an undo window with a shrinking countdown before anything runs, then working, done and failed-with-retry states. Double submits are ignored.",
+    sourceFile: "src/components/ui/undo-button.tsx",
+    usage: `"use client";
+
+import { UndoButton } from "@/components/ui/undo-button";
+
+export function SendButton({ draft }: { draft: Draft }) {
+  return (
+    <UndoButton
+      label="Send email"
+      countdownLabel="Sending"
+      doneLabel="Sent"
+      undoWindow={5000}                  // nothing is sent during these 5 seconds
+      onAction={() => api.send(draft)}   // a rejection shows "Failed · Retry"
+      onUndo={() => toast("Send undone")}
+    />
+  );
+}`,
+    props: [
+      { name: "label", type: "string", description: "Text in the resting state." },
+      {
+        name: "onAction",
+        type: "() => void | Promise<void>",
+        description: "Runs only after the undo window ends. A rejection shows retry.",
+      },
+      { name: "onUndo", type: "() => void", description: "When the user undoes during the countdown." },
+      { name: "undoWindow", type: "number", default: "5000", description: "ms to undo. 0 runs right away." },
+      { name: "confirm", type: "boolean", default: "false", description: "Needs a second click within 3 s first." },
+      {
+        name: "countdownLabel / pendingLabel / doneLabel",
+        type: "string",
+        default: '"Sending" / "Working…" / "Done"',
+        description: "Text for each state.",
+      },
+      { name: "tone", type: '"default" | "danger"', default: '"default"', description: "Red for destructive actions." },
+      {
+        name: "icon / disabled",
+        type: "ReactNode / boolean",
+        description: "Icon in the resting state, and disabling.",
+      },
+    ],
+    Demo: UndoButtonDemo,
+  },
+  {
+    slug: "post-card",
+    name: "Social Post Card",
+    type: "card",
+    week: 9,
+    description:
+      "A social post card with optimistic like, repost and bookmark that roll back with a message on failure, a like burst, share, Show more for long text, linked hashtags, mentions and URLs, and compact counts.",
+    sourceFile: "src/components/ui/post-card.tsx",
+    usage: `"use client";
+
+import { PostCard } from "@/components/ui/post-card";
+
+export function FeedItem({ post }: { post: Post }) {
+  return (
+    <PostCard
+      author={{ name: post.author.name, handle: post.author.handle, verified: post.author.verified }}
+      date={post.createdAt}
+      text={post.text}                       // #tags, @mentions and links become links
+      counts={{ likes: post.likes, reposts: post.reposts, comments: post.comments }}
+      defaultLiked={post.likedByMe}
+      onLike={(liked) => api.setLike(post.id, liked)}   // UI updates first, rolls back on error
+      onBookmark={(saved) => api.setBookmark(post.id, saved)}
+      shareUrl={\`https://example.com/p/\${post.id}\`}
+    />
+  );
+}`,
+    props: [
+      {
+        name: "author",
+        type: "{ name; handle; color?; verified? }",
+        description: "Initials avatar and verified badge.",
+      },
+      { name: "date / text", type: "string", description: "ISO date and plain text with #tags, @mentions and URLs." },
+      { name: "counts", type: "{ likes; reposts; comments }", description: "Shown compact, e.g. 1.3K." },
+      {
+        name: "onLike / onRepost / onBookmark",
+        type: "(on: boolean) => void | Promise<void>",
+        description: "Optimistic. A rejection rolls back and shows a message.",
+      },
+      { name: "onComment", type: "() => void", description: "Comment button." },
+      { name: "shareUrl", type: "string", description: "Share sheet on phones, copy link elsewhere." },
+      { name: "media", type: "ReactNode", description: "Image or embed under the text." },
+      { name: "clampLines", type: "number", default: "4", description: "Lines before Show more." },
+      { name: "hrefForTag / hrefForMention", type: "(value) => string", description: "Where tags and mentions link." },
+    ],
+    Demo: PostCardDemo,
+  },
+  {
+    slug: "breadcrumbs",
+    name: "Responsive Breadcrumbs",
+    type: "navbar",
+    week: 9,
+    description:
+      "Breadcrumbs that measure the space they have, fold middle levels into a … menu, always keep the first and current page, and turn into a single back link on very narrow screens.",
+    sourceFile: "src/components/ui/breadcrumbs.tsx",
+    usage: `import { Breadcrumbs } from "@/components/ui/breadcrumbs";
+
+export function PageHeader() {
+  return (
+    <Breadcrumbs
+      items={[
+        { label: "Home", href: "/" },
+        { label: "Projects", href: "/projects" },
+        { label: "Gallery", href: "/projects/gallery" },
+        { label: "Settings" },          // current page: no href
+      ]}
+      compactBelow={360}
+    />
+  );
+}`,
+    props: [
+      {
+        name: "items",
+        type: "{ label; href?; icon? }[]",
+        description: "The last item is the current page (aria-current).",
+      },
+      { name: "label", type: "string", default: '"Breadcrumb"', description: "Accessible name of the nav." },
+      { name: "separator", type: "ReactNode", default: "chevron", description: "Between items." },
+      {
+        name: "compactBelow",
+        type: "number",
+        default: "360",
+        description: "Container width in px below which only a back link shows.",
+      },
+      { name: "accent", type: "string", default: '"#38bdf8"', description: "Focus ring color." },
+    ],
+    Demo: BreadcrumbsDemo,
   },
 ];
 

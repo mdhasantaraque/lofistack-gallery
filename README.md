@@ -31,6 +31,9 @@ Stack: Next.js (App Router) · React · TypeScript · Tailwind CSS · deployed o
 | 8    | input  | Date Range Picker     | `/components/date-range-picker` | [date-range-picker.tsx](src/components/ui/date-range-picker.tsx)    |
 | 8    | chart  | Interactive Line Chart | `/components/line-chart`    | [line-chart.tsx](src/components/ui/line-chart.tsx)                     |
 | 8    | modal  | Image Lightbox        | `/components/image-lightbox` | [image-lightbox.tsx](src/components/ui/image-lightbox.tsx)             |
+| 9    | button | Undoable Action Button | `/components/undo-button`   | [undo-button.tsx](src/components/ui/undo-button.tsx)                   |
+| 9    | card   | Social Post Card      | `/components/post-card`      | [post-card.tsx](src/components/ui/post-card.tsx)                       |
+| 9    | navbar | Responsive Breadcrumbs | `/components/breadcrumbs`   | [breadcrumbs.tsx](src/components/ui/breadcrumbs.tsx)                   |
 
 ## Adding a component
 
