@@ -31,6 +31,9 @@ import SkeletonLoaderDemo from "@/components/demos/skeleton-loader-demo";
 import BottomSheetDemo from "@/components/demos/bottom-sheet-demo";
 import BarChartDemo from "@/components/demos/bar-chart-demo";
 import FeatureTabsDemo from "@/components/demos/feature-tabs-demo";
+import SpeedDialDemo from "@/components/demos/speed-dial-demo";
+import StatCardDemo from "@/components/demos/stat-card-demo";
+import TagInputDemo from "@/components/demos/tag-input-demo";
 
 /** Plain labels from the challenge brief. Used to keep components distinct. */
 export type UiType =
@@ -1688,8 +1691,17 @@ export function Signups() {
         description: "Starting layout and a callback when it changes.",
       },
       { name: "defaultHidden", type: "string[]", default: "[]", description: "Series hidden on first render." },
-      { name: "height", type: "number", default: "260", description: "Plot height in px. Width follows the container." },
-      { name: "formatValue", type: "(n) => string", description: "Axis, tooltip, labels and table. Compact by default." },
+      {
+        name: "height",
+        type: "number",
+        default: "260",
+        description: "Plot height in px. Width follows the container.",
+      },
+      {
+        name: "formatValue",
+        type: "(n) => string",
+        description: "Axis, tooltip, labels and table. Compact by default.",
+      },
       { name: "accent", type: "string", default: '"#a78bfa"', description: "Focus ring color." },
     ],
     Demo: BarChartDemo,
@@ -1749,6 +1761,124 @@ export function Features() {
       { name: "accent", type: "string", default: '"#a78bfa"', description: "Progress bar, icons and checks." },
     ],
     Demo: FeatureTabsDemo,
+  },
+  {
+    slug: "speed-dial",
+    name: "Speed Dial Button",
+    type: "button",
+    week: 12,
+    description:
+      "A floating action button that fans out labelled actions with a staggered animation. Works as a menu button: arrow keys, Home and End, Escape, close on outside press or Tab, and focus returned to the button.",
+    sourceFile: "src/components/ui/speed-dial.tsx",
+    usage: `"use client";
+
+import { SpeedDial } from "@/components/ui/speed-dial";
+
+export function CreateButton() {
+  return (
+    <div className="fixed bottom-6 right-6">
+      <SpeedDial
+        label="Create"
+        direction="up"
+        actions={[
+          { id: "note", label: "New note", icon: <NoteIcon />, onSelect: () => createNote() },
+          { id: "photo", label: "New photo", icon: <CameraIcon />, onSelect: () => openCamera() },
+        ]}
+      />
+    </div>
+  );
+}`,
+    props: [
+      {
+        name: "actions",
+        type: "{ id; label; icon; onSelect; disabled? }[]",
+        description: "First one sits nearest the button. Labels are always visible.",
+      },
+      { name: "label", type: "string", description: "Accessible name of the button and its menu." },
+      { name: "icon", type: "ReactNode", default: "plus", description: "Rotates 45° while open." },
+      { name: "direction", type: '"up" | "down"', default: '"up"', description: "Which way the actions fan out." },
+      { name: "align", type: '"end" | "start"', default: '"end"', description: "Side the button sits on." },
+      { name: "scrim", type: "boolean", default: "false", description: "Dims the page while open." },
+      { name: "accent", type: "string", default: '"#a78bfa"', description: "Button and focus ring color." },
+    ],
+    Demo: SpeedDialDemo,
+  },
+  {
+    slug: "stat-card",
+    name: "KPI Stat Card",
+    type: "card",
+    week: 12,
+    description:
+      "A metric card with a period switch, change versus the previous period colored by whether it's good news, a sparkline you can scrub with the mouse or arrow keys, an optional goal bar and a loading state.",
+    sourceFile: "src/components/ui/stat-card.tsx",
+    usage: `import { StatCard } from "@/components/ui/stat-card";
+
+export function Churn({ data }: { data: Period[] }) {
+  return (
+    <StatCard
+      label="Churn rate"
+      periods={data}        // [{ id, label, compareLabel, value, previous, series, pointLabels? }]
+      defaultPeriod="30d"
+      goodWhen="down"       // a drop in churn shows green
+      format={(n) => \`\${n.toFixed(2)}%\`}
+    />
+  );
+}`,
+    props: [
+      { name: "label", type: "string", description: "Metric name, also the card's heading." },
+      {
+        name: "periods",
+        type: "{ id; label; compareLabel; value; previous; series; pointLabels? }[]",
+        description: "One entry per period button, e.g. 7D / 30D / 90D.",
+      },
+      { name: "defaultPeriod", type: "string", description: "Period id shown first." },
+      {
+        name: "format",
+        type: "(n) => string",
+        description: "Big number, sparkline readout and goal. Compact by default.",
+      },
+      { name: "goodWhen", type: '"up" | "down"', default: '"up"', description: "Which direction is colored green." },
+      { name: "flatBelow", type: "number", default: "0.5", description: "Changes under this % count as flat." },
+      { name: "target", type: "number", description: "Adds a goal progress bar." },
+      { name: "loading", type: "boolean", default: "false", description: "Skeleton and aria-busy." },
+      { name: "icon / accent", type: "ReactNode / string", description: "Icon next to the label; line color." },
+    ],
+    Demo: StatCardDemo,
+  },
+  {
+    slug: "tag-input",
+    name: "Tag Input",
+    type: "input",
+    week: 12,
+    description:
+      "A tag field with suggestions: Enter or comma adds, pasted lists split into tags, duplicates flash, validation explains what was skipped, Backspace and arrow keys move through tags, and a hidden input posts with forms.",
+    sourceFile: "src/components/ui/tag-input.tsx",
+    usage: `import { TagInput } from "@/components/ui/tag-input";
+
+export function SkillsField() {
+  return (
+    <TagInput
+      label="Skills"
+      name="skills"                    // posts "React,TypeScript"
+      defaultValue={["React", "TypeScript"]}
+      suggestions={["React", "Next.js", "TypeScript", "Go"]}
+      maxTags={8}
+      validate={(t) => (t.length < 2 ? "Too short" : null)}
+    />
+  );
+}`,
+    props: [
+      { name: "label / hint", type: "string / ReactNode", description: "Visible label and help text." },
+      { name: "value / defaultValue / onChange", type: "string[]", description: "Controlled or uncontrolled tags." },
+      { name: "suggestions", type: "string[]", description: "Offered while typing; their spelling wins." },
+      { name: "maxTags", type: "number", description: "Shows a counter and stops adding at the limit." },
+      { name: "allowCustom", type: "boolean", default: "true", description: "false: suggestions only." },
+      { name: "validate", type: "(tag) => string | null", description: "Return a message to reject a tag." },
+      { name: "caseSensitive", type: "boolean", default: "false", description: "How duplicates are detected." },
+      { name: "name", type: "string", description: "Hidden input with comma-joined tags for form posts." },
+      { name: "accent", type: "string", default: '"#a78bfa"', description: "Focus and highlight color." },
+    ],
+    Demo: TagInputDemo,
   },
 ];
 

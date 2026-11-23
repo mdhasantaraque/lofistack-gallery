@@ -40,6 +40,9 @@ Stack: Next.js (App Router) · React · TypeScript · Tailwind CSS · deployed o
 | 11   | modal  | Snap-point Bottom Sheet | `/components/bottom-sheet`  | [bottom-sheet.tsx](src/components/ui/bottom-sheet.tsx)                 |
 | 11   | chart  | Stacked Bar Chart     | `/components/bar-chart`      | [bar-chart.tsx](src/components/ui/bar-chart.tsx)                       |
 | 11   | section | Auto-rotating Feature Tabs | `/components/feature-tabs` | [feature-tabs.tsx](src/components/ui/feature-tabs.tsx)            |
+| 12   | button | Speed Dial Button     | `/components/speed-dial`     | [speed-dial.tsx](src/components/ui/speed-dial.tsx)                     |
+| 12   | card   | KPI Stat Card         | `/components/stat-card`      | [stat-card.tsx](src/components/ui/stat-card.tsx)                       |
+| 12   | input  | Tag Input             | `/components/tag-input`      | [tag-input.tsx](src/components/ui/tag-input.tsx)                       |
 
 ## Adding a component
 
