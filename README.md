@@ -37,6 +37,9 @@ Stack: Next.js (App Router) · React · TypeScript · Tailwind CSS · deployed o
 | 10   | form   | Verification Code Form | `/components/otp-form`      | [otp-form.tsx](src/components/ui/otp-form.tsx)                         |
 | 10   | table  | Editable Grid         | `/components/editable-grid`  | [editable-grid.tsx](src/components/ui/editable-grid.tsx)               |
 | 10   | loader | Flash-free Skeleton Loader | `/components/skeleton-loader` | [skeleton-loader.tsx](src/components/ui/skeleton-loader.tsx)    |
+| 11   | modal  | Snap-point Bottom Sheet | `/components/bottom-sheet`  | [bottom-sheet.tsx](src/components/ui/bottom-sheet.tsx)                 |
+| 11   | chart  | Stacked Bar Chart     | `/components/bar-chart`      | [bar-chart.tsx](src/components/ui/bar-chart.tsx)                       |
+| 11   | section | Auto-rotating Feature Tabs | `/components/feature-tabs` | [feature-tabs.tsx](src/components/ui/feature-tabs.tsx)            |
 
 ## Adding a component
 

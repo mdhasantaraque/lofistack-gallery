@@ -28,6 +28,9 @@ import BreadcrumbsDemo from "@/components/demos/breadcrumbs-demo";
 import OtpFormDemo from "@/components/demos/otp-form-demo";
 import EditableGridDemo from "@/components/demos/editable-grid-demo";
 import SkeletonLoaderDemo from "@/components/demos/skeleton-loader-demo";
+import BottomSheetDemo from "@/components/demos/bottom-sheet-demo";
+import BarChartDemo from "@/components/demos/bar-chart-demo";
+import FeatureTabsDemo from "@/components/demos/feature-tabs-demo";
 
 /** Plain labels from the challenge brief. Used to keep components distinct. */
 export type UiType =
@@ -1599,6 +1602,153 @@ export function TeamList({ loading, people }: { loading: boolean; people: Person
       },
     ],
     Demo: SkeletonLoaderDemo,
+  },
+  {
+    slug: "bottom-sheet",
+    name: "Snap-point Bottom Sheet",
+    type: "modal",
+    week: 11,
+    description:
+      "A modal sheet that slides up from the bottom: drag it between heights, flick it down to close, resize it from the keyboard, with a sticky footer, scrolling content and focus returned on close.",
+    sourceFile: "src/components/ui/bottom-sheet.tsx",
+    usage: `"use client";
+
+import { useState } from "react";
+import { BottomSheet } from "@/components/ui/bottom-sheet";
+
+export function Filters() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button onClick={() => setOpen(true)}>Filters</button>
+      <BottomSheet
+        open={open}
+        onOpenChange={setOpen}
+        title="Filters"
+        snapPoints={[0.5, 0.92]}   // half and almost full screen
+        footer={<button onClick={() => setOpen(false)}>Show results</button>}
+      >
+        <FilterFields />
+      </BottomSheet>
+    </>
+  );
+}`,
+    props: [
+      { name: "open / onOpenChange", type: "boolean / (open) => void", description: "Controlled open state." },
+      { name: "title / description", type: "string / ReactNode", description: "Heading and its accessible name." },
+      { name: "children", type: "ReactNode", description: "Scrolls inside the sheet." },
+      { name: "footer", type: "ReactNode", description: "Stays at the bottom, e.g. an apply button." },
+      {
+        name: "snapPoints",
+        type: "number[]",
+        default: "[0.5, 0.92]",
+        description: "Heights as fractions of the screen, smallest first. One value hides the resize handle.",
+      },
+      { name: "defaultSnap", type: "number", default: "0", description: "Height index used on every open." },
+      { name: "onSnapChange", type: "(index) => void", description: "After a drag, flick or key press settles." },
+      { name: "accent", type: "string", default: '"#a78bfa"', description: "Focus ring color." },
+    ],
+    Demo: BottomSheetDemo,
+  },
+  {
+    slug: "bar-chart",
+    name: "Stacked Bar Chart",
+    type: "chart",
+    week: 11,
+    description:
+      "A bar chart that switches between stacked, grouped and 100% layouts, hides series from the legend with animated bars, and has a tooltip that follows the mouse or the arrow keys.",
+    sourceFile: "src/components/ui/bar-chart.tsx",
+    usage: `import { BarChart } from "@/components/ui/bar-chart";
+
+export function Signups() {
+  return (
+    <BarChart
+      title="Sign-ups by channel"
+      categories={["Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]}
+      series={[
+        { id: "organic", label: "Organic", values: [1190, 1340, 1420, 1510, 1630, 1580] },
+        { id: "paid", label: "Paid ads", values: [720, 810, 760, 690, 840, 920] },
+      ]}
+      defaultLayout="stacked"   // or "grouped" / "percent"
+    />
+  );
+}`,
+    props: [
+      { name: "categories", type: "string[]", description: "Labels along the bottom." },
+      {
+        name: "series",
+        type: "{ id; label; values: number[]; color? }[]",
+        description: "One value per category. Colors default to a built-in palette.",
+      },
+      { name: "title", type: "string", description: "Accessible name and caption of the screen reader table." },
+      {
+        name: "defaultLayout / onLayoutChange",
+        type: '"stacked" | "grouped" | "percent"',
+        default: '"stacked"',
+        description: "Starting layout and a callback when it changes.",
+      },
+      { name: "defaultHidden", type: "string[]", default: "[]", description: "Series hidden on first render." },
+      { name: "height", type: "number", default: "260", description: "Plot height in px. Width follows the container." },
+      { name: "formatValue", type: "(n) => string", description: "Axis, tooltip, labels and table. Compact by default." },
+      { name: "accent", type: "string", default: '"#a78bfa"', description: "Focus ring color." },
+    ],
+    Demo: BarChartDemo,
+  },
+  {
+    slug: "feature-tabs",
+    name: "Auto-rotating Feature Tabs",
+    type: "section",
+    week: 11,
+    description:
+      "A landing page features section: tabs that rotate on their own with a progress bar, pause on hover, keyboard focus, off-screen and hidden tabs, keep their place after a pause, and stop once someone picks a tab.",
+    sourceFile: "src/components/ui/feature-tabs.tsx",
+    usage: `import { FeatureTabs } from "@/components/ui/feature-tabs";
+
+export function Features() {
+  return (
+    <FeatureTabs
+      eyebrow="Why Lumen"
+      title="Everything your team needs"
+      interval={6000}
+      features={[
+        {
+          id: "dashboards",
+          label: "Dashboards",
+          summary: "Live numbers in one place",
+          title: "Dashboards that build themselves",
+          description: "Connect a source and get a dashboard in seconds.",
+          points: ["40+ chart types", "Shareable links"],
+          media: <img src="/dashboards.png" alt="" />,
+        },
+        // ...
+      ]}
+    />
+  );
+}`,
+    props: [
+      {
+        name: "features",
+        type: "{ id; label; summary?; icon?; title; description; points?; media; cta? }[]",
+        description: "One tab and panel each.",
+      },
+      { name: "title / eyebrow / description", type: "string / string / ReactNode", description: "Section heading." },
+      {
+        name: "autoplay",
+        type: "boolean",
+        default: "true",
+        description: "Rotate on a timer. Always off with reduced motion.",
+      },
+      { name: "interval", type: "number", default: "6000", description: "ms per tab." },
+      {
+        name: "stopOnInteract",
+        type: "boolean",
+        default: "true",
+        description: "Picking a tab by hand stops the rotation.",
+      },
+      { name: "onChange", type: "(id) => void", description: "When the shown feature changes." },
+      { name: "accent", type: "string", default: '"#a78bfa"', description: "Progress bar, icons and checks." },
+    ],
+    Demo: FeatureTabsDemo,
   },
 ];
 
